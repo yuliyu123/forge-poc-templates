@@ -7,6 +7,7 @@ import {BalancerFlashLoan} from "./lib/BalancerFlashLoan.sol";
 import {MakerDAOFlashLoan} from "./lib/MakerDAOFlashLoan.sol";
 import {UniswapV2FlashLoan} from "./lib/UniswapV2FlashLoan.sol";
 import {UniswapV3FlashLoan} from "./lib/UniswapV3FlashLoan.sol";
+import {KeeperDaoFlashLoan} from "./lib/KeeperDaoFlashLoan.sol";
 
 enum FlashLoanProviders {
     NONE,
@@ -16,7 +17,8 @@ enum FlashLoanProviders {
     EULER,
     MAKERDAO,
     UNISWAPV2,
-    UNISWAPV3
+    UNISWAPV3,
+    KEEPERDAO
 }
 
 library FlashLoanProvider {
@@ -59,6 +61,8 @@ library FlashLoanProvider {
             UniswapV2FlashLoan.takeFlashLoan(token, amount);
         } else if (flp == FlashLoanProviders.UNISWAPV3) {
             UniswapV3FlashLoan.takeFlashLoan(token, amount);
+        } else if (flp == FlashLoanProviders.KEEPERDAO) {
+            KeeperDaoFlashLoan.takeFlashLoan(token, amount);
         } else {
             revert("FlashLoanProvider: Provider doesn't support single token flash loans");
         }
@@ -83,6 +87,8 @@ library FlashLoanProvider {
             UniswapV2FlashLoan.payFlashLoan(msg.data);
         } else if (flp == FlashLoanProviders.UNISWAPV3) {
             UniswapV3FlashLoan.payFlashLoan(msg.data);
+        } else if (flp == FlashLoanProviders.KEEPERDAO) {
+            KeeperDaoFlashLoan.payFlashLoan(msg.data);
         } else {
             revert("FlashLoanProvider: Flash loan provider not supported");
         }
@@ -107,6 +113,8 @@ library FlashLoanProvider {
             return UniswapV2FlashLoan.CALLBACK_SELECTOR;
         } else if (flp == FlashLoanProviders.UNISWAPV3) {
             return UniswapV3FlashLoan.CALLBACK_SELECTOR;
+        } else if (flp == FlashLoanProviders.KEEPERDAO) {
+            return KeeperDaoFlashLoan.CALLBACK_SELECTOR;
         }
     }
 
